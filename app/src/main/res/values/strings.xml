@@ -18,6 +18,8 @@
     <string name="pref_display_mode_summary">Choose how apps are shown</string>
     <string name="pref_font_type_title">Font Style</string>
     <string name="pref_font_type_summary">Choose the font for app labels</string>
+    <string name="pref_text_size_title">Text Size</string>
+    <string name="pref_text_size_summary">App label text size (currently %d sp)</string>
     <string name="pref_favorite_count_title">Number of Home Apps</string>
     <string name="pref_favorite_count_summary">Apps shown on home screen (currently %d)</string>
     
@@ -103,4 +105,10 @@
     <!-- App info -->
     <string name="app_description">Minimalist e-ink optimized launcher</string>
     <string name="version_format">Version %s</string>
+    
+    <!-- Default launcher prompt -->
+    <string name="default_launcher_title">Set as Default Launcher?</string>
+    <string name="default_launcher_message">Would you like to set BW Launch as your default home screen?</string>
+    <string name="set_default">Set Default</string>
+    <string name="not_now">Not Now</string>
 </resources>

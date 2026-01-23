@@ -126,23 +126,23 @@ class SettingsActivity : AppCompatActivity() {
             }
             displayCategory.addPreference(fontTypePref)
 
-            // Number of home screen apps
-            val favoriteCountPref = SeekBarPreference(context).apply {
-                key = "favorite_count"
-                title = getString(R.string.pref_favorite_count_title)
-                summary = getString(R.string.pref_favorite_count_summary, prefs.favoriteCount)
-                min = PreferencesManager.MIN_FAVORITE_COUNT
-                max = PreferencesManager.MAX_FAVORITE_COUNT
-                value = prefs.favoriteCount
+            // Text size slider
+            val textSizePref = SeekBarPreference(context).apply {
+                key = "text_size"
+                title = getString(R.string.pref_text_size_title)
+                summary = getString(R.string.pref_text_size_summary, prefs.textSize)
+                min = PreferencesManager.MIN_TEXT_SIZE
+                max = PreferencesManager.MAX_TEXT_SIZE
+                value = prefs.textSize
                 showSeekBarValue = true
                 setOnPreferenceChangeListener { pref, newValue ->
-                    val count = newValue as Int
-                    prefs.favoriteCount = count
-                    pref.summary = getString(R.string.pref_favorite_count_summary, count)
+                    val size = newValue as Int
+                    prefs.textSize = size
+                    pref.summary = getString(R.string.pref_text_size_summary, size)
                     true
                 }
             }
-            displayCategory.addPreference(favoriteCountPref)
+            displayCategory.addPreference(textSizePref)
 
             // ==================== APP SELECTION & ORDERING ====================
             val favoritesCategory = PreferenceCategory(context).apply {

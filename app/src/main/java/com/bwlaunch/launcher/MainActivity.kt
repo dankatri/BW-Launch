@@ -25,6 +25,7 @@ import com.bwlaunch.launcher.adapter.AllAppsAdapter
 import com.bwlaunch.launcher.adapter.FavoritesAdapter
 import com.bwlaunch.launcher.databinding.ActivityMainBinding
 import com.bwlaunch.launcher.model.AppInfo
+import com.bwlaunch.launcher.model.DarkModeSchedule
 import com.bwlaunch.launcher.model.DisplayMode
 import com.bwlaunch.launcher.model.FontType
 import com.bwlaunch.launcher.util.Debouncer
@@ -93,6 +94,11 @@ class MainActivity : AppCompatActivity() {
         setupClickListeners()
         startDarkModeServiceIfNeeded()
         registerDarkModeReceiver()
+        
+        // Check if this is first launch
+        if (!prefs.isFirstLaunchDone) {
+            showSetDefaultLauncherPrompt()
+        }
     }
     
     override fun onDestroy() {
@@ -179,6 +185,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupFavoritesList() {
         favoritesAdapter = FavoritesAdapter(
             displayMode = prefs.displayMode,
+            fontType = prefs.fontType,
+            textSizeSp = prefs.textSize,
             onAppClick = { app -> launchApp(app) },
             onAppLongClick = { app -> 
                 binding.favoritesRecyclerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
@@ -251,12 +259,56 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
+    
+    /**
+     * Shows a dialog prompting the user to set BW Launch as their default launcher.
+     * Only shown on first launch.
+     */
+    private fun showSetDefaultLauncherPrompt() {
+        AlertDialog.Builder(this, R.style.EInkDialogTheme)
+            .setTitle(R.string.default_launcher_title)
+            .setMessage(R.string.default_launcher_message)
+            .setPositiveButton(R.string.set_default) { _, _ ->
+                prefs.isFirstLaunchDone = true
+                openDefaultLauncherSettings()
+            }
+            .setNegativeButton(R.string.not_now) { _, _ ->
+                prefs.isFirstLaunchDone = true
+            }
+            .setCancelable(false)
+            .show()
+    }
+    
+    /**
+     * Opens the system UI to let the user choose their default launcher.
+     */
+    private fun openDefaultLauncherSettings() {
+        try {
+            // Method 1: Show launcher chooser by simulating a HOME press
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(Intent.createChooser(intent, getString(R.string.default_launcher_title)))
+        } catch (e: Exception) {
+            // Method 2: Open default apps settings as fallback
+            try {
+                val intent = Intent(android.provider.Settings.ACTION_HOME_SETTINGS)
+                startActivity(intent)
+            } catch (e2: Exception) {
+                // Last resort: open general settings
+                val intent = Intent(android.provider.Settings.ACTION_SETTINGS)
+                startActivity(intent)
+            }
+        }
+    }
 
     private fun loadFavorites() {
         lifecycleScope.launch {
             val favorites = appLoader.getFavoriteApps(prefs)
             favoritesAdapter.setDisplayMode(prefs.displayMode)
             favoritesAdapter.setFontType(prefs.fontType)
+            favoritesAdapter.setTextSize(prefs.textSize)
             favoritesAdapter.submitList(favorites)
             
             // Show/hide empty state

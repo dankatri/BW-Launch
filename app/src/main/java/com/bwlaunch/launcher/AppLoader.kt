@@ -129,6 +129,8 @@ class AppLoader(private val context: Context) {
     suspend fun isAppInstalled(packageName: String): Boolean {
         return getAllApps().any { it.packageName == packageName }
     }
+    
+    /**
      * Invalidate the cache to force reload on next access.
      */
     fun invalidateCache() {

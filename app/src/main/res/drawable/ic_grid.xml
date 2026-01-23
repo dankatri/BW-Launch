@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Grid icon for All Apps button
+    E-ink optimized: pure black, no gradients
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Top row -->
+    <path
+        android:fillColor="@color/eink_black"
+        android:pathData="M3,3h6v6H3V3z" />
+    <path
+        android:fillColor="@color/eink_black"
+        android:pathData="M15,3h6v6h-6V3z" />
+    
+    <!-- Bottom row -->
+    <path
+        android:fillColor="@color/eink_black"
+        android:pathData="M3,15h6v6H3v-6z" />
+    <path
+        android:fillColor="@color/eink_black"
+        android:pathData="M15,15h6v6h-6v-6z" />
+</vector>

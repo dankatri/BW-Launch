@@ -30,6 +30,7 @@ import com.bwlaunch.launcher.model.FontType
 class FavoritesAdapter(
     private var displayMode: DisplayMode,
     private var fontType: FontType = FontType.SANS_SERIF,
+    private var textSizeSp: Int = 18,
     private val onAppClick: (AppInfo) -> Unit,
     private val onAppLongClick: (AppInfo) -> Boolean
 ) : ListAdapter<AppInfo, FavoritesAdapter.ViewHolder>(AppDiffCallback()) {
@@ -44,6 +45,13 @@ class FavoritesAdapter(
     fun setFontType(type: FontType) {
         if (fontType != type) {
             fontType = type
+            notifyDataSetChanged()
+        }
+    }
+
+    fun setTextSize(sizeSp: Int) {
+        if (textSizeSp != sizeSp) {
+            textSizeSp = sizeSp
             notifyDataSetChanged()
         }
     }
@@ -63,7 +71,7 @@ class FavoritesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), position, itemCount, displayMode, fontType, onAppClick, onAppLongClick)
+        holder.bind(getItem(position), position, itemCount, displayMode, fontType, textSizeSp, onAppClick, onAppLongClick)
     }
 
     class ViewHolder(itemView: View, mode: DisplayMode) : RecyclerView.ViewHolder(itemView) {
@@ -76,17 +84,19 @@ class FavoritesAdapter(
             totalCount: Int,
             mode: DisplayMode,
             fontType: FontType,
+            textSizeSp: Int,
             onClick: (AppInfo) -> Unit,
             onLongClick: (AppInfo) -> Boolean
         ) {
             val context = itemView.context
             
-            // Apply font type
+            // Apply font type and size
             val typeface = when (fontType) {
                 FontType.SANS_SERIF -> Typeface.SANS_SERIF
                 FontType.SERIF -> Typeface.SERIF
             }
             labelView?.typeface = typeface
+            labelView?.textSize = textSizeSp.toFloat()
             
             when (mode) {
                 DisplayMode.TEXT -> {

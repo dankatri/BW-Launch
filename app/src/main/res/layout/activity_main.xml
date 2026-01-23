@@ -29,11 +29,8 @@
         <com.bwlaunch.launcher.util.EInkRecyclerView
             android:id="@+id/favoritesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingTop="48dp"
-            android:paddingBottom="24dp"
             android:scrollbars="none"
             android:overScrollMode="never"
             android:layerType="software" />
@@ -49,21 +46,21 @@
             android:visibility="gone"
             android:layout_gravity="center" />
 
-        <!-- All Apps button - large tap target -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/allAppsButton"
-            style="@style/EInkButton"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:minWidth="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="32dp"
-            android:text="@string/all_apps"
-            android:textSize="18sp"
-            android:contentDescription="@string/cd_open_all_apps" />
-
     </LinearLayout>
+    
+    <!-- All Apps button - subtle icon in bottom right corner -->
+    <ImageButton
+        android:id="@+id/allAppsButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_grid"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/cd_open_all_apps" />
 
     <!-- All Apps overlay (initially hidden) -->
     <FrameLayout

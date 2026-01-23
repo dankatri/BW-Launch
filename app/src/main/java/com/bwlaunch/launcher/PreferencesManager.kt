@@ -30,10 +30,16 @@ class PreferencesManager(context: Context) {
         private const val KEY_LOCATION_LATITUDE = "location_latitude"
         private const val KEY_LOCATION_LONGITUDE = "location_longitude"
         private const val KEY_CUSTOM_LABEL_PREFIX = "custom_label_"
+        private const val KEY_TEXT_SIZE = "text_size"
+        private const val KEY_FIRST_LAUNCH_DONE = "first_launch_done"
 
         const val DEFAULT_FAVORITE_COUNT = 5
         const val MIN_FAVORITE_COUNT = 3
         const val MAX_FAVORITE_COUNT = 10
+        
+        const val DEFAULT_TEXT_SIZE = 18
+        const val MIN_TEXT_SIZE = 12
+        const val MAX_TEXT_SIZE = 48
     }
 
     var displayMode: DisplayMode
@@ -43,6 +49,14 @@ class PreferencesManager(context: Context) {
     var fontType: FontType
         get() = FontType.fromKey(prefs.getString(KEY_FONT_TYPE, FontType.SANS_SERIF.key) ?: FontType.SANS_SERIF.key)
         set(value) = prefs.edit { putString(KEY_FONT_TYPE, value.key) }
+
+    var textSize: Int
+        get() = prefs.getInt(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        set(value) = prefs.edit { putInt(KEY_TEXT_SIZE, value.coerceIn(MIN_TEXT_SIZE, MAX_TEXT_SIZE)) }
+
+    var isFirstLaunchDone: Boolean
+        get() = prefs.getBoolean(KEY_FIRST_LAUNCH_DONE, false)
+        set(value) = prefs.edit { putBoolean(KEY_FIRST_LAUNCH_DONE, value) }
 
     var favoriteCount: Int
         get() = prefs.getInt(KEY_FAVORITE_COUNT, DEFAULT_FAVORITE_COUNT)
