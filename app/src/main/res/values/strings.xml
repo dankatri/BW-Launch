@@ -70,4 +70,37 @@
     <string name="move_up">Move up</string>
     <string name="move_down">Move down</string>
     <string name="drag_to_reorder">Drag to reorder</string>
+    
+    <!-- Dark Mode Service -->
+    <string name="dark_mode_service_channel">Dark Mode Scheduling</string>
+    <string name="dark_mode_service_description">Monitors time for automatic dark mode switching</string>
+    <string name="dark_mode_monitoring">Monitoring dark mode schedule</string>
+    
+    <!-- Accessibility content descriptions -->
+    <string name="cd_app_icon">App icon for %s</string>
+    <string name="cd_close_drawer">Close app drawer</string>
+    <string name="cd_open_all_apps">Open all apps drawer</string>
+    <string name="cd_open_settings">Open settings</string>
+    <string name="cd_checkbox_selected">Selected</string>
+    <string name="cd_checkbox_not_selected">Not selected</string>
+    <string name="cd_move_up_in_list">Move %s up in list</string>
+    <string name="cd_move_down_in_list">Move %s down in list</string>
+    <string name="cd_drag_to_reorder">Drag to reorder %s</string>
+    <string name="cd_app_position">%1$s, position %2$d of %3$d</string>
+    <string name="cd_role_app">Application</string>
+    <string name="cd_action_edit_label">Edit label</string>
+    
+    <!-- Error messages -->
+    <string name="error_app_not_found">App not found. It may have been uninstalled.</string>
+    <string name="error_cannot_launch">Cannot launch app</string>
+    <string name="error_invalid_time">Invalid time range. Start time must be before end time.</string>
+    <string name="error_location_required">Location is required for sunrise/sunset mode</string>
+    
+    <!-- Hints and tips -->
+    <string name="hint_long_press_edit">Long-press an app to edit its label</string>
+    <string name="hint_long_press_settings">Long-press empty space to open settings</string>
+    
+    <!-- App info -->
+    <string name="app_description">Minimalist e-ink optimized launcher</string>
+    <string name="version_format">Version %s</string>
 </resources>

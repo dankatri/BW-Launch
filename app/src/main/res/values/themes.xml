@@ -155,5 +155,51 @@
         <item name="android:minHeight">64dp</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
-</resources>
+    
+    <!-- E-ink optimized dialog theme -->
+    <style name="EInkDialogTheme" parent="Theme.Material3.Light.Dialog.Alert">
+        <item name="android:windowBackground">@color/eink_white</item>
+        <item name="android:colorBackground">@color/eink_white</item>
+        <item name="colorSurface">@color/eink_white</item>
+        <item name="colorOnSurface">@color/eink_black</item>
+        <item name="android:textColorPrimary">@color/eink_black</item>
+        <item name="android:textColorSecondary">@color/eink_black</item>
+        <item name="buttonBarPositiveButtonStyle">@style/EInkDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/EInkDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/EInkDialogButton</item>
+        <!-- No animations -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+    
+    <!-- Dark mode dialog theme -->
+    <style name="EInkDialogTheme.Dark" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="android:windowBackground">@color/eink_black</item>
+        <item name="android:colorBackground">@color/eink_black</item>
+        <item name="colorSurface">@color/eink_black</item>
+        <item name="colorOnSurface">@color/eink_white</item>
+        <item name="android:textColorPrimary">@color/eink_white</item>
+        <item name="android:textColorSecondary">@color/eink_white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/EInkDialogButton.Dark</item>
+        <item name="buttonBarNegativeButtonStyle">@style/EInkDialogButton.Dark</item>
+        <item name="buttonBarNeutralButtonStyle">@style/EInkDialogButton.Dark</item>
+        <!-- No animations -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+    
+    <!-- E-ink dialog button style -->
+    <style name="EInkDialogButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/eink_black</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="rippleColor">@android:color/transparent</item>
+    </style>
+    
+    <style name="EInkDialogButton.Dark">
+        <item name="android:textColor">@color/eink_white</item>
+    </style>
 </resources>

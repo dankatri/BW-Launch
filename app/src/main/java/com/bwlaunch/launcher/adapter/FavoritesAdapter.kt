@@ -4,8 +4,12 @@ import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +21,11 @@ import com.bwlaunch.launcher.model.FontType
 /**
  * Adapter for displaying favorite apps on the home screen.
  * Uses DiffUtil to minimize UI updates and reduce e-ink refreshes.
+ * 
+ * Accessibility features:
+ * - Content descriptions for all items
+ * - TalkBack support with position announcements
+ * - Long-press action announced for screen readers
  */
 class FavoritesAdapter(
     private var displayMode: DisplayMode,
@@ -54,7 +63,7 @@ class FavoritesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), displayMode, fontType, onAppClick, onAppLongClick)
+        holder.bind(getItem(position), position, itemCount, displayMode, fontType, onAppClick, onAppLongClick)
     }
 
     class ViewHolder(itemView: View, mode: DisplayMode) : RecyclerView.ViewHolder(itemView) {
@@ -63,11 +72,15 @@ class FavoritesAdapter(
 
         fun bind(
             app: AppInfo,
+            position: Int,
+            totalCount: Int,
             mode: DisplayMode,
             fontType: FontType,
             onClick: (AppInfo) -> Unit,
             onLongClick: (AppInfo) -> Boolean
         ) {
+            val context = itemView.context
+            
             // Apply font type
             val typeface = when (fontType) {
                 FontType.SANS_SERIF -> Typeface.SANS_SERIF
@@ -82,12 +95,29 @@ class FavoritesAdapter(
                 DisplayMode.ICONS_TEXT -> {
                     labelView?.text = app.displayLabel
                     iconView?.setImageDrawable(app.icon)
+                    iconView?.contentDescription = context.getString(R.string.cd_app_icon, app.displayLabel)
                 }
                 DisplayMode.ICONS -> {
                     iconView?.setImageDrawable(app.icon)
                     iconView?.contentDescription = app.displayLabel
                 }
             }
+            
+            // Accessibility: Set content description with position info
+            val positionInfo = context.getString(R.string.cd_app_position, app.displayLabel, position + 1, totalCount)
+            itemView.contentDescription = "$positionInfo. ${context.getString(R.string.hint_long_press_edit)}"
+            
+            // Add custom accessibility action for long press
+            ViewCompat.setAccessibilityDelegate(itemView, object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                    info.roleDescription = context.getString(R.string.cd_role_app)
+                    info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat(
+                        AccessibilityNodeInfo.ACTION_LONG_CLICK,
+                        context.getString(R.string.cd_action_edit_label)
+                    ))
+                }
+            })
 
             itemView.setOnClickListener { onClick(app) }
             itemView.setOnLongClickListener { onLongClick(app) }

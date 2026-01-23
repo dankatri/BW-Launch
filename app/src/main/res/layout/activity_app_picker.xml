@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    E-INK OPTIMIZED: App picker layout
+    
+    - Uses EInkRecyclerView for optimized scrolling
+    - Larger padding for comfortable touch targets
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?android:attr/colorBackground"
+    android:layerType="software">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bwlaunch.launcher.util.EInkRecyclerView
         android:id="@+id/appsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        android:overScrollMode="never" />
 
 </LinearLayout>

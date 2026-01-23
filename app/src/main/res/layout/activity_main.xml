@@ -60,7 +60,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
             android:text="@string/all_apps"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:contentDescription="@string/cd_open_all_apps" />
 
     </LinearLayout>
 
@@ -99,9 +100,10 @@
                     android:layout_height="56dp"
                     android:layout_gravity="end|center_vertical"
                     android:background="@drawable/eink_selectable_item"
-                    android:contentDescription="@string/close"
+                    android:contentDescription="@string/cd_close_drawer"
                     android:src="@drawable/ic_close"
-                    android:padding="14dp" />
+                    android:padding="14dp"
+                    android:importantForAccessibility="yes" />
 
             </FrameLayout>
 

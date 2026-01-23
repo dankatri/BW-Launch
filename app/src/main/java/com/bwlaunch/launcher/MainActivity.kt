@@ -1,22 +1,34 @@
 package com.bwlaunch.launcher
 
+import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bwlaunch.launcher.adapter.AllAppsAdapter
 import com.bwlaunch.launcher.adapter.FavoritesAdapter
 import com.bwlaunch.launcher.databinding.ActivityMainBinding
 import com.bwlaunch.launcher.model.AppInfo
 import com.bwlaunch.launcher.model.DisplayMode
 import com.bwlaunch.launcher.model.FontType
+import com.bwlaunch.launcher.util.Debouncer
+import com.bwlaunch.launcher.util.EInkUtils
 import kotlinx.coroutines.launch
 
 /**
@@ -27,6 +39,11 @@ import kotlinx.coroutines.launch
  * - Configurable display modes (text, icons+text, icons)
  * - Long-press gestures for settings and label editing
  * - All Apps overlay drawer
+ * - E-ink optimized rendering with debounced updates
+ * 
+ * Gesture Handling:
+ * - Long-press on app item: Opens inline edit label dialog
+ * - Long-press on empty space: Opens Settings
  */
 class MainActivity : AppCompatActivity() {
 
@@ -35,8 +52,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appLoader: AppLoader
     private lateinit var favoritesAdapter: FavoritesAdapter
     private lateinit var allAppsAdapter: AllAppsAdapter
+    
+    // Debouncer for e-ink optimized updates
+    private val uiDebouncer = Debouncer()
+    
+    // Gesture detector for empty space long-press
+    private lateinit var emptySpaceGestureDetector: GestureDetector
 
     private var isAllAppsVisible = false
+    
+    // Currently active edit dialog (for dismissal)
+    private var activeEditDialog: AlertDialog? = null
+    
+    // Receiver for dark mode changes from background service
+    private val darkModeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == DarkModeService.ACTION_DARK_MODE_CHANGED) {
+                checkThemeChange()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Apply theme before super.onCreate
@@ -46,20 +81,61 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        // Optimize root layout for e-ink
+        EInkUtils.optimizeForEInk(binding.root)
 
         appLoader = AppLoader(this)
         
+        setupEmptySpaceGestureDetector()
         setupFavoritesList()
         setupAllAppsDrawer()
         setupClickListeners()
+        startDarkModeServiceIfNeeded()
+        registerDarkModeReceiver()
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        uiDebouncer.cancel()
+        activeEditDialog?.dismiss()
+        activeEditDialog = null
+        try {
+            unregisterReceiver(darkModeReceiver)
+        } catch (e: Exception) {
+            // Receiver not registered
+        }
     }
 
     override fun onResume() {
         super.onResume()
         // Check if theme needs to change (scheduled dark mode)
         checkThemeChange()
-        // Reload favorites in case preferences changed
-        loadFavorites()
+        // Reload favorites in case preferences changed (debounced for e-ink)
+        uiDebouncer.debounce {
+            loadFavorites()
+        }
+    }
+    
+    private fun registerDarkModeReceiver() {
+        val filter = IntentFilter(DarkModeService.ACTION_DARK_MODE_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(darkModeReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(darkModeReceiver, filter)
+        }
+    }
+    
+    private fun startDarkModeServiceIfNeeded() {
+        val schedule = prefs.darkModeSchedule
+        if (schedule == DarkModeSchedule.TIME_BASED || schedule == DarkModeSchedule.SUNRISE_SUNSET) {
+            val serviceIntent = Intent(this, DarkModeService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            } else {
+                startService(serviceIntent)
+            }
+        }
     }
 
     private fun applyTheme() {
@@ -78,12 +154,37 @@ class MainActivity : AppCompatActivity() {
             recreate()
         }
     }
+    
+    /**
+     * Sets up GestureDetector to detect long-press on empty space in the RecyclerView.
+     * Empty space is any area not occupied by an app item.
+     */
+    private fun setupEmptySpaceGestureDetector() {
+        emptySpaceGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onLongPress(e: MotionEvent) {
+                // Check if the touch is on an app item or empty space
+                val recyclerView = binding.favoritesRecyclerView
+                val childView = recyclerView.findChildViewUnder(e.x, e.y)
+                
+                if (childView == null) {
+                    // Long-press on empty space - open settings
+                    recyclerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    openSettings()
+                }
+                // If childView != null, the app item's own long-press handler will handle it
+            }
+        })
+    }
 
     private fun setupFavoritesList() {
         favoritesAdapter = FavoritesAdapter(
             displayMode = prefs.displayMode,
             onAppClick = { app -> launchApp(app) },
-            onAppLongClick = { app -> showEditLabelDialog(app); true }
+            onAppLongClick = { app -> 
+                binding.favoritesRecyclerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                showEditLabelDialog(app)
+                true 
+            }
         )
 
         binding.favoritesRecyclerView.apply {
@@ -91,6 +192,20 @@ class MainActivity : AppCompatActivity() {
             adapter = favoritesAdapter
             // Disable item animations for e-ink
             itemAnimator = null
+            // Set software layer for e-ink optimization
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            
+            // Add touch listener for empty space detection
+            addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    // Only handle gestures on empty space (where no child is under touch)
+                    val childView = rv.findChildViewUnder(e.x, e.y)
+                    if (childView == null) {
+                        emptySpaceGestureDetector.onTouchEvent(e)
+                    }
+                    return false // Don't intercept, let items handle their own touches
+                }
+            })
         }
     }
 
@@ -101,11 +216,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.allAppsRecyclerView.apply {
-            // 4-column grid for app drawer
-            layoutManager = GridLayoutManager(this@MainActivity, 4)
+            // 3-column grid for larger tap targets on e-ink
+            layoutManager = GridLayoutManager(this@MainActivity, 3)
             adapter = allAppsAdapter
             // Disable item animations for e-ink
             itemAnimator = null
+            // Set software layer for e-ink optimization
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         }
     }
 
@@ -119,9 +236,16 @@ class MainActivity : AppCompatActivity() {
         binding.closeAllAppsButton.setOnClickListener {
             hideAllApps()
         }
-
-        // Long-press on empty space opens settings
-        binding.homeContainer.setOnLongClickListener {
+        
+        // Long-press on empty state text also opens settings
+        binding.emptyStateText.setOnLongClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            openSettings()
+            true
+        }
+        
+        // Long-press on All Apps button opens settings (alternative access)
+        binding.allAppsButton.setOnLongClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             openSettings()
             true
@@ -164,6 +288,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Launches an app with proper error handling.
+     * Handles cases where app may have been uninstalled or changed.
+     */
     private fun launchApp(app: AppInfo) {
         try {
             val intent = Intent(Intent.ACTION_MAIN).apply {
@@ -178,36 +306,131 @@ class MainActivity : AppCompatActivity() {
                 val launchIntent = packageManager.getLaunchIntentForPackage(app.packageName)
                 if (launchIntent != null) {
                     startActivity(launchIntent)
+                } else {
+                    // App not found - may have been uninstalled
+                    showAppNotFoundError(app)
                 }
             } catch (e2: Exception) {
-                e2.printStackTrace()
+                showAppLaunchError(app)
             }
         }
     }
+    
+    /**
+     * Shows error when an app cannot be found (likely uninstalled).
+     * Triggers a refresh to clean up the favorites list.
+     */
+    private fun showAppNotFoundError(app: AppInfo) {
+        android.widget.Toast.makeText(
+            this,
+            getString(R.string.error_app_not_found),
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+        
+        // Force reload to clean up uninstalled apps
+        appLoader.invalidateCache()
+        loadFavorites()
+    }
+    
+    /**
+     * Shows generic app launch error.
+     */
+    private fun showAppLaunchError(app: AppInfo) {
+        android.widget.Toast.makeText(
+            this,
+            getString(R.string.error_cannot_launch),
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+    }
 
+    /**
+     * Shows an inline edit dialog for changing an app's label.
+     * 
+     * Features:
+     * - Pre-filled with current label
+     * - Save button stores custom label to SharedPreferences
+     * - Cancel button dismisses without changes
+     * - Reset button clears custom label
+     * - Immediate UI update without full refresh
+     * - E-ink optimized (no animations)
+     */
     private fun showEditLabelDialog(app: AppInfo) {
+        // Dismiss any existing dialog
+        activeEditDialog?.dismiss()
+        
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_label, null)
         val editText = dialogView.findViewById<EditText>(R.id.labelEditText)
         editText.setText(app.displayLabel)
         editText.selectAll()
+        
+        // Handle keyboard "Done" action
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                saveLabel(app, editText.text.toString().trim())
+                activeEditDialog?.dismiss()
+                activeEditDialog = null
+                true
+            } else {
+                false
+            }
+        }
+        
+        // Choose dialog theme based on current dark mode
+        val dialogTheme = if (prefs.shouldUseDarkMode()) {
+            R.style.EInkDialogTheme_Dark
+        } else {
+            R.style.EInkDialogTheme
+        }
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this, dialogTheme)
             .setView(dialogView)
             .setPositiveButton(R.string.save) { _, _ ->
-                val newLabel = editText.text.toString().trim()
-                if (newLabel.isNotEmpty() && newLabel != app.label) {
-                    prefs.setCustomLabel(app.packageName, newLabel)
-                } else {
-                    prefs.setCustomLabel(app.packageName, null)
-                }
-                loadFavorites()
+                saveLabel(app, editText.text.toString().trim())
             }
             .setNegativeButton(R.string.cancel, null)
             .setNeutralButton(R.string.reset) { _, _ ->
                 prefs.setCustomLabel(app.packageName, null)
-                loadFavorites()
+                updateAppLabelInList(app.packageName, app.label)
             }
-            .show()
+            .create()
+        
+        activeEditDialog = dialog
+        dialog.show()
+        
+        // Request focus and show keyboard
+        editText.requestFocus()
+    }
+    
+    /**
+     * Saves the custom label and updates UI immediately.
+     */
+    private fun saveLabel(app: AppInfo, newLabel: String) {
+        if (newLabel.isNotEmpty() && newLabel != app.label) {
+            prefs.setCustomLabel(app.packageName, newLabel)
+            updateAppLabelInList(app.packageName, newLabel)
+        } else if (newLabel.isEmpty() || newLabel == app.label) {
+            // Reset to original label
+            prefs.setCustomLabel(app.packageName, null)
+            updateAppLabelInList(app.packageName, app.label)
+        }
+    }
+    
+    /**
+     * Updates a single app's label in the favorites list without full refresh.
+     * Uses DiffUtil internally via submitList for efficient partial update.
+     */
+    private fun updateAppLabelInList(packageName: String, newLabel: String) {
+        val currentList = favoritesAdapter.currentList.toMutableList()
+        val index = currentList.indexOfFirst { it.packageName == packageName }
+        
+        if (index >= 0) {
+            val updatedApp = currentList[index].copy(customLabel = 
+                if (newLabel == currentList[index].label) null else newLabel
+            )
+            currentList[index] = updatedApp
+            // Submit new list - DiffUtil will only update changed item
+            favoritesAdapter.submitList(currentList)
+        }
     }
 
     private fun openSettings() {

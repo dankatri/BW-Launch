@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    E-INK OPTIMIZED LAUNCHER ICON
+    
+    Minimalist "BW" design with high contrast for e-ink displays.
+    Pure black on transparent for adaptive icon support.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Simple "BW" text representation -->
+    
+    <!-- "B" letter - bold for visibility -->
     <path
         android:fillColor="#000000"
-        android:pathData="M34,40h4v28h-4zM40,40h4l4,14 4,-14h4v28h-4v-18l-4,12 -4,-12v18h-4z"/>
+        android:pathData="M28,32L28,76L46,76Q54,76 58,71Q62,66 62,58Q62,52 59,48Q56,44 51,43L51,42.5Q55,41 57.5,38Q60,35 60,30Q60,24 55.5,20Q51,16 44,16L28,16L28,32ZM38,40L38,24L43,24Q47,24 49,26Q51,28 51,32Q51,36 49,38Q47,40 43,40L38,40ZM38,68L38,48L45,48Q50,48 52.5,51Q55,54 55,59Q55,64 52.5,66Q50,68 45,68L38,68Z" />
+    
+    <!-- "W" letter - bold for visibility -->
     <path
         android:fillColor="#000000"
-        android:pathData="M58,40h4l3,20 3,-20 3,20 3,-20h4l-5,28h-4l-3,-18 -3,18h-4z"/>
+        android:pathData="M64,16L72,16L78,52L84,16L92,16L82,76L74,76L68,44L62,76L54,76L64,16Z" />
 </vector>
