@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BW Launch</string>
+    <string name="settings_title">Settings</string>
+    <string name="pick_apps_title">Select &amp; Order Apps</string>
+    <string name="all_apps">All Apps</string>
+    <string name="close">Close</string>
+    <string name="no_apps_configured">Long-press to add apps</string>
+    
+    <!-- Settings Categories -->
+    <string name="pref_category_display">Display Options</string>
+    <string name="pref_category_favorites">App Selection &amp; Ordering</string>
+    <string name="pref_category_dark_mode">Dark Mode</string>
+    <string name="pref_category_appearance">Appearance</string>
+    
+    <!-- Display Options -->
+    <string name="pref_display_mode_title">Display Mode</string>
+    <string name="pref_display_mode_summary">Choose how apps are shown</string>
+    <string name="pref_font_type_title">Font Style</string>
+    <string name="pref_font_type_summary">Choose the font for app labels</string>
+    <string name="pref_favorite_count_title">Number of Home Apps</string>
+    <string name="pref_favorite_count_summary">Apps shown on home screen (currently %d)</string>
+    
+    <!-- Display modes -->
+    <string name="display_mode_text">Text Only</string>
+    <string name="display_mode_icons_text">Icons + Text</string>
+    <string name="display_mode_icons">Icons Only</string>
+    
+    <!-- Font types -->
+    <string name="font_type_sans_serif">Sans-serif</string>
+    <string name="font_type_serif">Serif</string>
+    
+    <!-- App Selection -->
+    <string name="pref_select_favorites_title">Select Favorite Apps</string>
+    <string name="pref_select_favorites_summary">Choose and order apps for home screen</string>
+    
+    <!-- Dark Mode Scheduling -->
+    <string name="pref_dark_mode_schedule_title">Dark Mode Schedule</string>
+    <string name="pref_dark_mode_title">Dark Mode</string>
+    <string name="pref_dark_mode_summary">Enable dark theme</string>
+    <string name="pref_dark_start_time_title">Dark Mode Start Time</string>
+    <string name="pref_dark_end_time_title">Dark Mode End Time</string>
+    
+    <!-- Dark Mode Schedule Options -->
+    <string name="dark_mode_manual">Manual Toggle</string>
+    <string name="dark_mode_time_based">Time-based Schedule</string>
+    <string name="dark_mode_sunrise_sunset">Sunrise/Sunset</string>
+    
+    <!-- Location for Sunrise/Sunset -->
+    <string name="pref_location_title">Location for Sunrise/Sunset</string>
+    <string name="pref_location_summary_not_set">Tap to set location</string>
+    <string name="pref_location_summary_set">Sunrise: %1$s, Sunset: %2$s</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_updated">Location updated</string>
+    <string name="location_not_available">Could not get location</string>
+    <string name="location_error">Error getting location</string>
+    
+    <!-- Legacy (kept for compatibility) -->
+    <string name="pref_scheduled_dark_mode_title">Scheduled Dark Mode</string>
+    <string name="pref_scheduled_dark_mode_summary">Auto-enable dark mode at set times</string>
+    
+    <!-- Edit label dialog -->
+    <string name="edit_label_title">Edit Label</string>
+    <string name="edit_label_hint">App label</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    
+    <!-- Reorder controls -->
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="drag_to_reorder">Drag to reorder</string>
+</resources>

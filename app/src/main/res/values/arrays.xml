@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Display mode options -->
+    <string-array name="display_mode_entries">
+        <item>@string/display_mode_text</item>
+        <item>@string/display_mode_icons_text</item>
+        <item>@string/display_mode_icons</item>
+    </string-array>
+    
+    <string-array name="display_mode_values">
+        <item>text</item>
+        <item>icons_text</item>
+        <item>icons</item>
+    </string-array>
+    
+    <!-- Font type options -->
+    <string-array name="font_type_entries">
+        <item>@string/font_type_sans_serif</item>
+        <item>@string/font_type_serif</item>
+    </string-array>
+    
+    <string-array name="font_type_values">
+        <item>sans_serif</item>
+        <item>serif</item>
+    </string-array>
+    
+    <!-- Dark mode schedule options -->
+    <string-array name="dark_mode_schedule_entries">
+        <item>@string/dark_mode_manual</item>
+        <item>@string/dark_mode_time_based</item>
+        <item>@string/dark_mode_sunrise_sunset</item>
+    </string-array>
+    
+    <string-array name="dark_mode_schedule_values">
+        <item>manual</item>
+        <item>time_based</item>
+        <item>sunrise_sunset</item>
+    </string-array>
+</resources>

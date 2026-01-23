@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 
+    E-INK OPTIMIZED THEME
+    
+    Key optimizations:
+    - Pure black (#000000) and white (#FFFFFF) only
+    - No gradients, shadows, or transparency
+    - All animations disabled
+    - Large touch targets (56-64dp minimum)
+    - High contrast for all interactive elements
+    -->
+
+    <!-- Light theme (default) for e-ink -->
+    <style name="Theme.BWLaunch" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Pure black/white color scheme -->
+        <item name="colorPrimary">@color/eink_black</item>
+        <item name="colorOnPrimary">@color/eink_white</item>
+        <item name="colorPrimaryContainer">@color/eink_white</item>
+        <item name="colorOnPrimaryContainer">@color/eink_black</item>
+        <item name="colorSecondary">@color/eink_black</item>
+        <item name="colorOnSecondary">@color/eink_white</item>
+        <item name="colorSurface">@color/eink_white</item>
+        <item name="colorOnSurface">@color/eink_black</item>
+        <item name="colorSurfaceVariant">@color/eink_white</item>
+        <item name="colorOnSurfaceVariant">@color/eink_black</item>
+        <item name="colorOutline">@color/eink_black</item>
+        
+        <!-- Window colors -->
+        <item name="android:colorBackground">@color/eink_white</item>
+        <item name="android:windowBackground">@color/eink_white</item>
+        <item name="android:statusBarColor">@color/eink_white</item>
+        <item name="android:navigationBarColor">@color/eink_white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        
+        <!-- Disable all animations for e-ink -->
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">false</item>
+        <item name="android:windowActivityTransitions">false</item>
+        
+        <!-- Disable ripple effects -->
+        <item name="android:selectableItemBackground">@drawable/eink_selectable_item</item>
+        <item name="android:selectableItemBackgroundBorderless">@drawable/eink_selectable_item</item>
+        
+        <!-- Text appearance -->
+        <item name="android:textColorPrimary">@color/eink_black</item>
+        <item name="android:textColorSecondary">@color/eink_black</item>
+        <item name="android:textColorHint">@color/eink_gray</item>
+        
+        <!-- Disable elevation/shadows -->
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <!-- Dark theme for e-ink (inverted colors) -->
+    <style name="Theme.BWLaunch.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Inverted pure black/white -->
+        <item name="colorPrimary">@color/eink_white</item>
+        <item name="colorOnPrimary">@color/eink_black</item>
+        <item name="colorPrimaryContainer">@color/eink_black</item>
+        <item name="colorOnPrimaryContainer">@color/eink_white</item>
+        <item name="colorSecondary">@color/eink_white</item>
+        <item name="colorOnSecondary">@color/eink_black</item>
+        <item name="colorSurface">@color/eink_black</item>
+        <item name="colorOnSurface">@color/eink_white</item>
+        <item name="colorSurfaceVariant">@color/eink_black</item>
+        <item name="colorOnSurfaceVariant">@color/eink_white</item>
+        <item name="colorOutline">@color/eink_white</item>
+        
+        <!-- Window colors -->
+        <item name="android:colorBackground">@color/eink_black</item>
+        <item name="android:windowBackground">@color/eink_black</item>
+        <item name="android:statusBarColor">@color/eink_black</item>
+        <item name="android:navigationBarColor">@color/eink_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        
+        <!-- Disable all animations for e-ink -->
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">false</item>
+        <item name="android:windowActivityTransitions">false</item>
+        
+        <!-- Disable ripple effects -->
+        <item name="android:selectableItemBackground">@drawable/eink_selectable_item_dark</item>
+        <item name="android:selectableItemBackgroundBorderless">@drawable/eink_selectable_item_dark</item>
+        
+        <!-- Text appearance -->
+        <item name="android:textColorPrimary">@color/eink_white</item>
+        <item name="android:textColorSecondary">@color/eink_white</item>
+        <item name="android:textColorHint">@color/eink_gray</item>
+        
+        <!-- Disable elevation/shadows -->
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <!-- No animations style - completely disable all transitions -->
+    <style name="NoAnimation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+        <item name="android:wallpaperOpenEnterAnimation">@null</item>
+        <item name="android:wallpaperOpenExitAnimation">@null</item>
+        <item name="android:wallpaperCloseEnterAnimation">@null</item>
+        <item name="android:wallpaperCloseExitAnimation">@null</item>
+        <item name="android:wallpaperIntraOpenEnterAnimation">@null</item>
+        <item name="android:wallpaperIntraOpenExitAnimation">@null</item>
+        <item name="android:wallpaperIntraCloseEnterAnimation">@null</item>
+        <item name="android:wallpaperIntraCloseExitAnimation">@null</item>
+    </style>
+
+    <!-- E-ink optimized button style -->
+    <style name="EInkButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="strokeColor">?colorOnSurface</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:paddingStart">32dp</item>
+        <item name="android:paddingEnd">32dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="cornerRadius">0dp</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- E-ink optimized text style -->
+    <style name="EInkText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <!-- E-ink optimized app item style -->
+    <style name="EInkAppItem">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+</resources>
+</resources>

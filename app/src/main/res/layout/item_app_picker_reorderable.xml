@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Checkbox -->
+    <CheckBox
+        android:id="@+id/appCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <!-- App icon -->
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null" />
+
+    <!-- App label -->
+    <TextView
+        android:id="@+id/appLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="App Name" />
+
+    <!-- Reorder controls (visible only when selected) -->
+    <LinearLayout
+        android:id="@+id/reorderControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <!-- Order number -->
+        <TextView
+            android:id="@+id/orderNumber"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:background="@drawable/circle_outline"
+            tools:text="1" />
+
+        <!-- Up button -->
+        <ImageButton
+            android:id="@+id/upButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/move_up"
+            android:src="@drawable/ic_arrow_up"
+            android:padding="6dp" />
+
+        <!-- Down button -->
+        <ImageButton
+            android:id="@+id/downButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/move_down"
+            android:src="@drawable/ic_arrow_down"
+            android:padding="6dp" />
+
+        <!-- Drag handle -->
+        <ImageView
+            android:id="@+id/dragHandle"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_drag_handle"
+            android:contentDescription="@string/drag_to_reorder" />
+
+    </LinearLayout>
+
+</LinearLayout>

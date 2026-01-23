@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <!-- Main home screen content -->
+    <LinearLayout
+        android:id="@+id/homeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <!-- Favorite apps list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favoritesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="48dp"
+            android:paddingBottom="24dp"
+            android:overScrollMode="never" />
+
+        <!-- Empty state message -->
+        <TextView
+            android:id="@+id/emptyStateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_apps_configured"
+            android:textSize="16sp"
+            android:textColor="@color/gray_medium"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+        <!-- All Apps button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/allAppsButton"
+            style="@style/EInkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/all_apps"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <!-- All Apps overlay (initially hidden) -->
+    <FrameLayout
+        android:id="@+id/allAppsOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Header with close button -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/all_apps"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <ImageButton
+                    android:id="@+id/closeAllAppsButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/close"
+                    android:src="@drawable/ic_close"
+                    android:padding="12dp" />
+
+            </FrameLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black" />
+
+            <!-- All apps grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/allAppsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

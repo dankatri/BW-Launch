@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple "BW" text representation -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M34,40h4v28h-4zM40,40h4l4,14 4,-14h4v28h-4v-18l-4,12 -4,-12v18h-4z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M58,40h4l3,20 3,-20 3,20 3,-20h4l-5,28h-4l-3,-18 -3,18h-4z"/>
+</vector>
