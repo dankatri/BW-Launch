@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    E-INK OPTIMIZED: Reorderable app picker item
+    
+    - Large tap targets (56dp buttons)
+    - E-ink selectable background
+    - Clear visual hierarchy for ordering
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="72dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="12dp"
-    android:background="?attr/selectableItemBackground">
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/eink_selectable_item">
 
     <!-- Checkbox -->
     <CheckBox
         android:id="@+id/appCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:clickable="false"
-        android:focusable="false" />
+        android:focusable="false"
+        android:scaleX="1.2"
+        android:scaleY="1.2" />
 
     <!-- App icon -->
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
         android:scaleType="fitCenter"
         android:contentDescription="@null" />
 
     <!-- App label -->
-    <TextView
+    <com.bwlaunch.launcher.util.EInkTextView
         android:id="@+id/appLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:textColor="?android:attr/textColorPrimary"
         android:ellipsize="end"
         android:maxLines="1"
         tools:text="App Name" />
@@ -50,45 +63,44 @@
         tools:visibility="visible">
 
         <!-- Order number -->
-        <TextView
+        <com.bwlaunch.launcher.util.EInkTextView
             android:id="@+id/orderNumber"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:gravity="center"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="?android:attr/textColorPrimary"
             android:background="@drawable/circle_outline"
             tools:text="1" />
 
-        <!-- Up button -->
+        <!-- Up button - large tap target -->
         <ImageButton
             android:id="@+id/upButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/eink_selectable_item"
             android:contentDescription="@string/move_up"
             android:src="@drawable/ic_arrow_up"
-            android:padding="6dp" />
+            android:padding="10dp" />
 
-        <!-- Down button -->
+        <!-- Down button - large tap target -->
         <ImageButton
             android:id="@+id/downButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/eink_selectable_item"
             android:contentDescription="@string/move_down"
             android:src="@drawable/ic_arrow_down"
-            android:padding="6dp" />
+            android:padding="10dp" />
 
-        <!-- Drag handle -->
+        <!-- Drag handle - large tap target -->
         <ImageView
             android:id="@+id/dragHandle"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            android:padding="6dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="10dp"
             android:src="@drawable/ic_drag_handle"
             android:contentDescription="@string/drag_to_reorder" />
 
