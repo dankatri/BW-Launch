@@ -12,14 +12,24 @@ android {
         minSdk = 28  // Boox Palma runs Android 11+, but 28 gives wider compatibility
         targetSdk = 33  // Target 33 for Boox device compatibility
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../bwlaunch-release.keystore")
+            storePassword = "bwlaunch123"
+            keyAlias = "bwlaunch"
+            keyPassword = "bwlaunch123"
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

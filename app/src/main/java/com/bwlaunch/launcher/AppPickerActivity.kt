@@ -46,7 +46,6 @@ class AppPickerActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = ReorderableAppPickerAdapter(
             selectedPackages = prefs.favorites.toMutableList(),
-            maxSelection = prefs.favoriteCount,
             onSelectionChanged = { orderedSelection ->
                 prefs.setFavoritesOrdered(orderedSelection)
             },

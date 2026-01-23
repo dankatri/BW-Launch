@@ -126,7 +126,7 @@ class PreferencesManager(context: Context) {
 
     fun addFavorite(packageName: String) {
         val current = favorites.toMutableList()
-        if (!current.contains(packageName) && current.size < favoriteCount) {
+        if (!current.contains(packageName)) {
             current.add(packageName)
             favorites = current
         }
@@ -148,7 +148,7 @@ class PreferencesManager(context: Context) {
     }
 
     fun setFavoritesOrdered(orderedPackages: List<String>) {
-        favorites = orderedPackages.take(favoriteCount)
+        favorites = orderedPackages
     }
 
     /**

@@ -245,6 +245,13 @@ class MainActivity : AppCompatActivity() {
             hideAllApps()
         }
         
+        // Long-press on home container (empty space) opens settings
+        binding.homeContainer.setOnLongClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            openSettings()
+            true
+        }
+        
         // Long-press on empty state text also opens settings
         binding.emptyStateText.setOnLongClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)

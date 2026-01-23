@@ -87,7 +87,6 @@ class AppLoader(private val context: Context) {
         var needsCleanup = false
         
         val validFavorites = favoritePackages
-            .take(prefs.favoriteCount)
             .mapNotNull { packageName ->
                 val app = allApps.find { it.packageName == packageName }
                 if (app == null) {

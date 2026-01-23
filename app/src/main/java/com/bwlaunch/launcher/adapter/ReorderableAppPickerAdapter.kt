@@ -22,7 +22,6 @@ import com.bwlaunch.launcher.model.AppInfo
  */
 class ReorderableAppPickerAdapter(
     private val selectedPackages: MutableList<String>,
-    private val maxSelection: Int,
     private val onSelectionChanged: (List<String>) -> Unit,
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onMoveItem: (Int, Int) -> Unit
@@ -94,7 +93,7 @@ class ReorderableAppPickerAdapter(
     private fun toggleSelection(app: AppInfo) {
         if (selectedPackages.contains(app.packageName)) {
             selectedPackages.remove(app.packageName)
-        } else if (selectedPackages.size < maxSelection) {
+        } else {
             selectedPackages.add(app.packageName)
         }
         onSelectionChanged(selectedPackages.toList())
