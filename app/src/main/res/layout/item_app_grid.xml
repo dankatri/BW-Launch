@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Grid item for All Apps drawer -->
+<!--
+    E-INK OPTIMIZED: Grid item for All Apps drawer
+    
+    - Large tap target (minimum 80dp height)
+    - E-ink selectable background (no ripple)
+    - Larger icon (56dp) for visibility
+    - Larger text for readability on e-ink
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="100dp"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="12dp"
-    android:background="?attr/selectableItemBackground">
+    android:padding="8dp"
+    android:background="@drawable/eink_selectable_item">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:scaleType="fitCenter"
         android:contentDescription="@null" />
 
-    <TextView
+    <com.bwlaunch.launcher.util.EInkTextView
         android:id="@+id/appLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textColor="?android:attr/textColorPrimary"
         android:ellipsize="end"
         android:maxLines="2"
         android:lines="2" />

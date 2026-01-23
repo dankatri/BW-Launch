@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icons + Text display mode item -->
+<!--
+    E-INK OPTIMIZED: Icons + Text display mode item
+    
+    - Large tap target (64dp minimum height)
+    - E-ink selectable background (no ripple)
+    - Large icon (56dp) for visibility
+    - Pure colors, no transparency
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="72dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/eink_selectable_item">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:scaleType="fitCenter"
         android:contentDescription="@null" />
 
-    <TextView
+    <com.bwlaunch.launcher.util.EInkTextView
         android:id="@+id/appLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="16dp"
-        android:textSize="18sp"
-        android:textColor="@color/black"
+        android:layout_marginStart="20dp"
+        android:textSize="20sp"
+        android:textColor="?android:attr/textColorPrimary"
         android:ellipsize="end"
         android:maxLines="1" />
 

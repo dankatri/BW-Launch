@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Text-only display mode item -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    E-INK OPTIMIZED: Text-only display mode item
+    
+    - Large tap target (64dp minimum height)
+    - E-ink selectable background (no ripple)
+    - Pure colors, no transparency
+-->
+<com.bwlaunch.launcher.util.EInkTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/appLabel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="64dp"
     android:gravity="center"
-    android:padding="20dp"
-    android:textSize="20sp"
-    android:textColor="@color/black"
-    android:background="?attr/selectableItemBackground"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:textSize="22sp"
+    android:textColor="?android:attr/textColorPrimary"
+    android:background="@drawable/eink_selectable_item"
     android:ellipsize="end"
     android:maxLines="1" />

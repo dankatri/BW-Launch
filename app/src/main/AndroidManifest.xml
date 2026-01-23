@@ -9,6 +9,11 @@
     <!-- Location permissions for sunrise/sunset calculation -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    
+    <!-- Required for background service in Android 9+ -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -51,6 +56,21 @@
             android:label="@string/pick_apps_title"
             android:parentActivityName=".SettingsActivity"
             android:screenOrientation="portrait" />
+
+        <!-- Dark Mode Scheduling Service -->
+        <service
+            android:name=".DarkModeService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+        
+        <!-- Boot receiver to restart service -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

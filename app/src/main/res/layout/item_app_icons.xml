@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icons-only display mode item -->
+<!--
+    E-INK OPTIMIZED: Icons-only display mode item
+    
+    - Large tap target (88dp total with padding)
+    - E-ink selectable background (no ripple)
+    - Large icon (64dp) for visibility on e-ink
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:minHeight="88dp"
+    android:padding="12dp"
+    android:background="@drawable/eink_selectable_item">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         android:contentDescription="@null" />
