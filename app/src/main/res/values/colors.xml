@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray_light">#FFE0E0E0</color>
-    <color name="gray_medium">#FF808080</color>
+    <!--
+    E-INK OPTIMIZED COLOR PALETTE
+    
+    Rules for e-ink displays:
+    1. Pure black (#000000) and pure white (#FFFFFF) only for maximum contrast
+    2. No alpha transparency - causes ghosting on e-ink
+    3. No gradients - appear banded on e-ink
+    4. Gray only for disabled/hint states
+    -->
+
+    <!-- Primary e-ink colors (no alpha for maximum contrast) -->
+    <color name="eink_black">#000000</color>
+    <color name="eink_white">#FFFFFF</color>
+    
+    <!-- Gray for secondary elements (disabled, hints) -->
+    <color name="eink_gray">#808080</color>
+    <color name="eink_gray_light">#C0C0C0</color>
+    
+    <!-- Legacy color names (mapped to e-ink optimized) -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray_light">#C0C0C0</color>
+    <color name="gray_medium">#808080</color>
+    
+    <!-- Pressed states (solid colors, no transparency) -->
+    <color name="eink_pressed_light">#E0E0E0</color>
+    <color name="eink_pressed_dark">#404040</color>
 </resources>
