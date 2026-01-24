@@ -37,9 +37,9 @@ class PreferencesManager(context: Context) {
         const val MIN_FAVORITE_COUNT = 3
         const val MAX_FAVORITE_COUNT = 10
         
-        const val DEFAULT_TEXT_SIZE = 18
+        const val DEFAULT_TEXT_SIZE = 25
         const val MIN_TEXT_SIZE = 12
-        const val MAX_TEXT_SIZE = 48
+        const val MAX_TEXT_SIZE = 60
     }
 
     var displayMode: DisplayMode
