@@ -12,6 +12,7 @@
     <string name="pref_category_favorites">App Selection &amp; Ordering</string>
     <string name="pref_category_dark_mode">Dark Mode</string>
     <string name="pref_category_appearance">Appearance</string>
+    <string name="pref_category_weather">Weather</string>
     
     <!-- Display Options -->
     <string name="pref_display_mode_title">Display Mode</string>
@@ -111,4 +112,11 @@
     <string name="default_launcher_message">Would you like to set BW Launch as your default home screen?</string>
     <string name="set_default">Set Default</string>
     <string name="not_now">Not Now</string>
+
+    <!-- Weather widget -->
+    <string name="pref_weather_enabled_title">Weather Widget</string>
+    <string name="pref_weather_enabled_summary">Show current weather in top-right corner</string>
+    <string name="cd_weather_widget">Current weather</string>
+    <string name="weather_unavailable">Weather unavailable</string>
+    <string name="weather_location_required">Location required for weather</string>
 </resources>

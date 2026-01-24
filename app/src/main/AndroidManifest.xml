@@ -5,6 +5,9 @@
     <!-- Query all installed apps -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+
+    <!-- Internet for weather widget -->
+    <uses-permission android:name="android.permission.INTERNET" />
     
     <!-- Location permissions for sunrise/sunset calculation -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

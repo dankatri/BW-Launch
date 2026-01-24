@@ -164,6 +164,31 @@ class SettingsActivity : AppCompatActivity() {
             }
             favoritesCategory.addPreference(selectFavoritesPref)
 
+            // ==================== WEATHER WIDGET ====================
+            val weatherCategory = PreferenceCategory(context).apply {
+                key = "category_weather"
+                title = getString(R.string.pref_category_weather)
+            }
+            screen.addPreference(weatherCategory)
+
+            // Weather widget toggle
+            val weatherEnabledPref = SwitchPreferenceCompat(context).apply {
+                key = "weather_enabled"
+                title = getString(R.string.pref_weather_enabled_title)
+                summary = getString(R.string.pref_weather_enabled_summary)
+                isChecked = prefs.weatherEnabled
+                setOnPreferenceChangeListener { _, newValue ->
+                    val enabled = newValue as Boolean
+                    prefs.weatherEnabled = enabled
+                    // Request location permission when enabling weather
+                    if (enabled && !prefs.hasLocation) {
+                        requestLocationPermission()
+                    }
+                    true
+                }
+            }
+            weatherCategory.addPreference(weatherEnabledPref)
+
             // ==================== DARK MODE SCHEDULING ====================
             // Dark mode is temporarily disabled - uncomment this section to re-enable
             /*
