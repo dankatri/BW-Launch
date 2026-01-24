@@ -28,7 +28,8 @@ class AppPickerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferencesManager(this)
-        setTheme(if (prefs.shouldUseDarkMode()) R.style.Theme_BWLaunch_Dark else R.style.Theme_BWLaunch)
+        // Dark mode disabled - always use light theme
+        setTheme(R.style.Theme_BWLaunch)
         
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_picker)

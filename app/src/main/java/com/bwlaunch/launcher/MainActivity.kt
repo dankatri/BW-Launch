@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Apply theme before super.onCreate
         prefs = PreferencesManager(this)
-        applyTheme()
+        // Dark mode disabled for now - always use light theme
+        setTheme(R.style.Theme_BWLaunch)
         
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -92,8 +93,9 @@ class MainActivity : AppCompatActivity() {
         setupFavoritesList()
         setupAllAppsDrawer()
         setupClickListeners()
-        startDarkModeServiceIfNeeded()
-        registerDarkModeReceiver()
+        // Dark mode service disabled
+        // startDarkModeServiceIfNeeded()
+        // registerDarkModeReceiver()
         
         // Check if this is first launch
         if (!prefs.isFirstLaunchDone) {
@@ -106,17 +108,18 @@ class MainActivity : AppCompatActivity() {
         uiDebouncer.cancel()
         activeEditDialog?.dismiss()
         activeEditDialog = null
-        try {
-            unregisterReceiver(darkModeReceiver)
-        } catch (e: Exception) {
-            // Receiver not registered
-        }
+        // Dark mode receiver disabled
+        // try {
+        //     unregisterReceiver(darkModeReceiver)
+        // } catch (e: Exception) {
+        //     // Receiver not registered
+        // }
     }
 
     override fun onResume() {
         super.onResume()
-        // Check if theme needs to change (scheduled dark mode)
-        checkThemeChange()
+        // Dark mode theme check disabled
+        // checkThemeChange()
         // Reload favorites in case preferences changed (debounced for e-ink)
         uiDebouncer.debounce {
             loadFavorites()

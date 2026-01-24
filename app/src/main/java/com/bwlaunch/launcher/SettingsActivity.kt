@@ -31,9 +31,9 @@ import com.google.android.gms.location.Priority
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Apply theme
+        // Apply theme - dark mode disabled, always use light
         val prefs = PreferencesManager(this)
-        setTheme(if (prefs.shouldUseDarkMode()) R.style.Theme_BWLaunch_Dark else R.style.Theme_BWLaunch)
+        setTheme(R.style.Theme_BWLaunch)
         
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -165,6 +165,8 @@ class SettingsActivity : AppCompatActivity() {
             favoritesCategory.addPreference(selectFavoritesPref)
 
             // ==================== DARK MODE SCHEDULING ====================
+            // Dark mode is temporarily disabled - uncomment this section to re-enable
+            /*
             val darkModeCategory = PreferenceCategory(context).apply {
                 key = "category_dark_mode"
                 title = getString(R.string.pref_category_dark_mode)
@@ -265,10 +267,12 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             darkModeCategory.addPreference(locationPref)
+            */ // End of dark mode section - temporarily disabled
 
             preferenceScreen = screen
         }
 
+        /* Dark mode helper functions - temporarily disabled
         private fun updateDarkModePrefsVisibility(schedule: DarkModeSchedule) {
             findPreference<SwitchPreferenceCompat>("dark_mode")?.isVisible = 
                 schedule == DarkModeSchedule.MANUAL
@@ -279,6 +283,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("location_status")?.isVisible = 
                 schedule == DarkModeSchedule.SUNRISE_SUNSET
         }
+        */
 
         private fun formatTime(hour: Int, minute: Int): String {
             return String.format("%02d:%02d", hour, minute)
