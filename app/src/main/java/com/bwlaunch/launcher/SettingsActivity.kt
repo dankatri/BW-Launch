@@ -164,6 +164,50 @@ class SettingsActivity : AppCompatActivity() {
             }
             favoritesCategory.addPreference(selectFavoritesPref)
 
+            // ==================== WEATHER WIDGET ====================
+            val weatherCategory = PreferenceCategory(context).apply {
+                key = "category_weather"
+                title = getString(R.string.pref_category_weather)
+            }
+            screen.addPreference(weatherCategory)
+
+            // Weather widget toggle
+            val weatherEnabledPref = SwitchPreferenceCompat(context).apply {
+                key = "weather_enabled"
+                title = getString(R.string.pref_weather_enabled_title)
+                summary = getString(R.string.pref_weather_enabled_summary)
+                isChecked = prefs.weatherEnabled
+                setOnPreferenceChangeListener { _, newValue ->
+                    val enabled = newValue as Boolean
+                    prefs.weatherEnabled = enabled
+                    // Request location permission when enabling weather
+                    if (enabled && !prefs.hasLocation) {
+                        requestLocationPermission()
+                    }
+                    true
+                }
+            }
+            weatherCategory.addPreference(weatherEnabledPref)
+
+            // Temperature unit selector
+            val temperatureUnitPref = ListPreference(context).apply {
+                key = "temperature_unit"
+                title = getString(R.string.pref_temperature_unit_title)
+                dialogTitle = getString(R.string.pref_temperature_unit_title)
+                entries = resources.getStringArray(R.array.temperature_unit_entries)
+                entryValues = resources.getStringArray(R.array.temperature_unit_values)
+                value = prefs.temperatureUnit
+                summary = entries[entryValues.indexOf(value)]
+                setOnPreferenceChangeListener { pref, newValue ->
+                    prefs.temperatureUnit = newValue as String
+                    pref.summary = entries[entryValues.indexOf(newValue)]
+                    // Clear weather cache when unit changes so it refreshes
+                    prefs.weatherCacheTime = 0L
+                    true
+                }
+            }
+            weatherCategory.addPreference(temperatureUnitPref)
+
             // ==================== DARK MODE SCHEDULING ====================
             // Dark mode is temporarily disabled - uncomment this section to re-enable
             /*

@@ -32,6 +32,10 @@ class PreferencesManager(context: Context) {
         private const val KEY_CUSTOM_LABEL_PREFIX = "custom_label_"
         private const val KEY_TEXT_SIZE = "text_size"
         private const val KEY_FIRST_LAUNCH_DONE = "first_launch_done"
+        private const val KEY_WEATHER_ENABLED = "weather_enabled"
+        private const val KEY_WEATHER_CACHE = "weather_cache"
+        private const val KEY_WEATHER_CACHE_TIME = "weather_cache_time"
+        private const val KEY_TEMPERATURE_UNIT = "temperature_unit"
 
         const val DEFAULT_FAVORITE_COUNT = 5
         const val MIN_FAVORITE_COUNT = 3
@@ -57,6 +61,25 @@ class PreferencesManager(context: Context) {
     var isFirstLaunchDone: Boolean
         get() = prefs.getBoolean(KEY_FIRST_LAUNCH_DONE, false)
         set(value) = prefs.edit { putBoolean(KEY_FIRST_LAUNCH_DONE, value) }
+
+    var weatherEnabled: Boolean
+        get() = prefs.getBoolean(KEY_WEATHER_ENABLED, false)
+        set(value) = prefs.edit { putBoolean(KEY_WEATHER_ENABLED, value) }
+
+    var weatherCache: String?
+        get() = prefs.getString(KEY_WEATHER_CACHE, null)
+        set(value) = prefs.edit { putString(KEY_WEATHER_CACHE, value) }
+
+    var weatherCacheTime: Long
+        get() = prefs.getLong(KEY_WEATHER_CACHE_TIME, 0L)
+        set(value) = prefs.edit { putLong(KEY_WEATHER_CACHE_TIME, value) }
+
+    var temperatureUnit: String
+        get() = prefs.getString(KEY_TEMPERATURE_UNIT, "fahrenheit") ?: "fahrenheit"
+        set(value) = prefs.edit { putString(KEY_TEMPERATURE_UNIT, value) }
+
+    val useCelsius: Boolean
+        get() = temperatureUnit == "celsius"
 
     var favoriteCount: Int
         get() = prefs.getInt(KEY_FAVORITE_COUNT, DEFAULT_FAVORITE_COUNT)

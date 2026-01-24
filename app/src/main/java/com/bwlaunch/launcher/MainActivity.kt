@@ -30,7 +30,9 @@ import com.bwlaunch.launcher.model.DisplayMode
 import com.bwlaunch.launcher.model.FontType
 import com.bwlaunch.launcher.util.Debouncer
 import com.bwlaunch.launcher.util.EInkUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Main launcher activity optimized for e-ink displays.
@@ -53,7 +55,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appLoader: AppLoader
     private lateinit var favoritesAdapter: FavoritesAdapter
     private lateinit var allAppsAdapter: AllAppsAdapter
-    
+    private val weatherService = WeatherService()
+
     // Debouncer for e-ink optimized updates
     private val uiDebouncer = Debouncer()
     
@@ -124,6 +127,8 @@ class MainActivity : AppCompatActivity() {
         uiDebouncer.debounce {
             loadFavorites()
         }
+        // Update weather widget
+        updateWeatherWidget()
     }
     
     private fun registerDarkModeReceiver() {
@@ -331,6 +336,76 @@ class MainActivity : AppCompatActivity() {
             val apps = appLoader.getAllApps()
             allAppsAdapter.submitList(apps)
         }
+    }
+
+    /**
+     * Updates the weather widget based on preferences.
+     * Uses cached weather data if still valid, otherwise fetches fresh data.
+     */
+    private fun updateWeatherWidget() {
+        if (!prefs.weatherEnabled) {
+            binding.weatherText.visibility = View.GONE
+            return
+        }
+
+        // Check if we have location
+        if (!prefs.hasLocation) {
+            binding.weatherText.visibility = View.GONE
+            return
+        }
+
+        val useCelsius = prefs.useCelsius
+
+        // Try to use cached weather first
+        val cachedWeather = prefs.weatherCache
+        val cacheTime = prefs.weatherCacheTime
+        val now = System.currentTimeMillis()
+
+        if (cachedWeather != null && (now - cacheTime) < WeatherService.CACHE_DURATION_MS) {
+            // Use cached data only if unit matches current preference
+            val weatherData = WeatherService.WeatherData.fromCache(cachedWeather)
+            if (weatherData != null && weatherData.useCelsius == useCelsius) {
+                displayWeather(weatherData)
+                return
+            }
+        }
+
+        // Fetch fresh weather data
+        lifecycleScope.launch {
+            val weatherData = weatherService.fetchWeather(
+                prefs.locationLatitude,
+                prefs.locationLongitude,
+                useCelsius
+            )
+
+            withContext(Dispatchers.Main) {
+                if (weatherData != null) {
+                    // Cache the result
+                    prefs.weatherCache = weatherData.toCache()
+                    prefs.weatherCacheTime = System.currentTimeMillis()
+                    displayWeather(weatherData)
+                } else {
+                    // Show cached data if available (even with different unit), otherwise hide
+                    val fallbackCache = prefs.weatherCache
+                    if (fallbackCache != null) {
+                        val fallbackData = WeatherService.WeatherData.fromCache(fallbackCache)
+                        if (fallbackData != null) {
+                            displayWeather(fallbackData)
+                            return@withContext
+                        }
+                    }
+                    binding.weatherText.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    /**
+     * Displays weather data in the widget.
+     */
+    private fun displayWeather(weatherData: WeatherService.WeatherData) {
+        binding.weatherText.text = weatherData.toDisplayString()
+        binding.weatherText.visibility = View.VISIBLE
     }
 
     private fun showAllApps() {
