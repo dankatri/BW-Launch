@@ -2,6 +2,19 @@
 
 A minimalist Android launcher optimized for e-ink displays, specifically designed for the Boox Palma.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/Text-only.png" width="200" alt="Text-only mode"/>
+  <img src="screenshots/Text-and-icons.png" width="200" alt="Text and icons mode"/>
+  <img src="screenshots/Icons-only.png" width="200" alt="Icons-only mode"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/app-draw.png" width="200" alt="App drawer"/>
+  <img src="screenshots/serif.png" width="200" alt="Serif font option"/>
+</p>
+
 ## Features
 
 - **Three Display Modes**: Text-only (default), Icons+Text, or Icons-only
