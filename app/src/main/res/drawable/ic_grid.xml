@@ -10,19 +10,8 @@
     android:viewportHeight="24"
     android:tint="?android:attr/textColorPrimary">
     
-    <!-- Top row -->
+    <!-- 2x2 grid of squares -->
     <path
         android:fillColor="#FF000000"
-        android:pathData="M3,3h6v6H3V3z" />
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="M15,3h6v6h-6V3z" />
-    
-    <!-- Bottom row -->
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="M3,15h6v6H3v-6z" />
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="M15,15h6v6h-6v-6z" />
+        android:pathData="M3,3h6v6H3V3z M15,3h6v6h-6V3z M3,15h6v6H3v-6z M15,15h6v6h-6v-6z" />
 </vector>
