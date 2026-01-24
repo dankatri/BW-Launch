@@ -19,10 +19,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../bwlaunch-release.keystore")
-            storePassword = "bwlaunch123"
-            keyAlias = "bwlaunch"
-            keyPassword = "bwlaunch123"
+            storeFile = file(System.getenv("SIGNING_KEYSTORE_PATH") ?: "../bwlaunch-release.keystore")
+            storePassword = System.getenv("SIGNING_KEYSTORE_PASSWORD") ?: "bwlaunch123"
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "bwlaunch"
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: "bwlaunch123"
         }
     }
 

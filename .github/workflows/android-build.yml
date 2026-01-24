@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -34,8 +36,30 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Decode Keystore
+        if: github.event_name == 'release'
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/bwlaunch-release.keystore
+
+      - name: Build Release APK
+        if: github.event_name == 'release'
+        run: ./gradlew assembleRelease
+        env:
+          SIGNING_KEYSTORE_PATH: ${{ github.workspace }}/bwlaunch-release.keystore
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload Release APK to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
