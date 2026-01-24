@@ -20,7 +20,6 @@ A minimalist Android launcher optimized for e-ink displays, specifically designe
 - **Three Display Modes**: Text-only (default), Icons+Text, or Icons-only
 - **Configurable Favorites**: Display 1-10 favorite apps on the home screen
 - **E-ink Optimized**: Pure white/black UI with minimal animations
-- **Scheduled Dark Mode**: Automatic theme switching based on time
 - **Custom Labels**: Long-press apps to edit their display names
 - **All Apps Drawer**: Full-screen overlay for accessing all installed apps
 
