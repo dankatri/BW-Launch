@@ -35,6 +35,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_WEATHER_ENABLED = "weather_enabled"
         private const val KEY_WEATHER_CACHE = "weather_cache"
         private const val KEY_WEATHER_CACHE_TIME = "weather_cache_time"
+        private const val KEY_TEMPERATURE_UNIT = "temperature_unit"
 
         const val DEFAULT_FAVORITE_COUNT = 5
         const val MIN_FAVORITE_COUNT = 3
@@ -72,6 +73,13 @@ class PreferencesManager(context: Context) {
     var weatherCacheTime: Long
         get() = prefs.getLong(KEY_WEATHER_CACHE_TIME, 0L)
         set(value) = prefs.edit { putLong(KEY_WEATHER_CACHE_TIME, value) }
+
+    var temperatureUnit: String
+        get() = prefs.getString(KEY_TEMPERATURE_UNIT, "fahrenheit") ?: "fahrenheit"
+        set(value) = prefs.edit { putString(KEY_TEMPERATURE_UNIT, value) }
+
+    val useCelsius: Boolean
+        get() = temperatureUnit == "celsius"
 
     var favoriteCount: Int
         get() = prefs.getInt(KEY_FAVORITE_COUNT, DEFAULT_FAVORITE_COUNT)

@@ -23,7 +23,8 @@ class WeatherService {
     data class WeatherData(
         val temperature: Int,
         val weatherCode: Int,
-        val isDay: Boolean
+        val isDay: Boolean,
+        val useCelsius: Boolean = false
     ) {
         /**
          * Returns a simple weather description based on WMO weather code.
@@ -75,7 +76,7 @@ class WeatherService {
          * Serialize to cache string
          */
         fun toCache(): String {
-            return "$temperature|$weatherCode|$isDay"
+            return "$temperature|$weatherCode|$isDay|$useCelsius"
         }
 
         companion object {
@@ -85,11 +86,12 @@ class WeatherService {
             fun fromCache(cache: String): WeatherData? {
                 return try {
                     val parts = cache.split("|")
-                    if (parts.size == 3) {
+                    if (parts.size >= 3) {
                         WeatherData(
                             temperature = parts[0].toInt(),
                             weatherCode = parts[1].toInt(),
-                            isDay = parts[2].toBoolean()
+                            isDay = parts[2].toBoolean(),
+                            useCelsius = parts.getOrNull(3)?.toBoolean() ?: false
                         )
                     } else null
                 } catch (e: Exception) {
@@ -101,15 +103,17 @@ class WeatherService {
 
     /**
      * Fetch current weather for the given coordinates.
+     * @param useCelsius If true, returns temperature in Celsius; otherwise Fahrenheit.
      * Returns null on failure.
      */
-    suspend fun fetchWeather(latitude: Double, longitude: Double): WeatherData? {
+    suspend fun fetchWeather(latitude: Double, longitude: Double, useCelsius: Boolean = false): WeatherData? {
         return withContext(Dispatchers.IO) {
             try {
+                val tempUnit = if (useCelsius) "celsius" else "fahrenheit"
                 val url = URL(
                     "$BASE_URL?latitude=$latitude&longitude=$longitude" +
                     "&current=temperature_2m,weather_code,is_day" +
-                    "&temperature_unit=fahrenheit" +
+                    "&temperature_unit=$tempUnit" +
                     "&timezone=auto"
                 )
 
@@ -122,7 +126,7 @@ class WeatherService {
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                     val response = connection.inputStream.bufferedReader().use { it.readText() }
-                    parseWeatherResponse(response)
+                    parseWeatherResponse(response, useCelsius)
                 } else {
                     null
                 }
@@ -132,7 +136,7 @@ class WeatherService {
         }
     }
 
-    private fun parseWeatherResponse(json: String): WeatherData? {
+    private fun parseWeatherResponse(json: String, useCelsius: Boolean): WeatherData? {
         return try {
             val root = JSONObject(json)
             val current = root.getJSONObject("current")
@@ -140,7 +144,8 @@ class WeatherService {
             WeatherData(
                 temperature = current.getDouble("temperature_2m").toInt(),
                 weatherCode = current.getInt("weather_code"),
-                isDay = current.getInt("is_day") == 1
+                isDay = current.getInt("is_day") == 1,
+                useCelsius = useCelsius
             )
         } catch (e: Exception) {
             null

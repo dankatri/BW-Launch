@@ -116,6 +116,9 @@
     <!-- Weather widget -->
     <string name="pref_weather_enabled_title">Weather Widget</string>
     <string name="pref_weather_enabled_summary">Show current weather in top-right corner</string>
+    <string name="pref_temperature_unit_title">Temperature Unit</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
     <string name="cd_weather_widget">Current weather</string>
     <string name="weather_unavailable">Weather unavailable</string>
     <string name="weather_location_required">Location required for weather</string>

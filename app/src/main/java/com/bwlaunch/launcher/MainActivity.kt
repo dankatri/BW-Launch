@@ -354,15 +354,17 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        val useCelsius = prefs.useCelsius
+
         // Try to use cached weather first
         val cachedWeather = prefs.weatherCache
         val cacheTime = prefs.weatherCacheTime
         val now = System.currentTimeMillis()
 
         if (cachedWeather != null && (now - cacheTime) < WeatherService.CACHE_DURATION_MS) {
-            // Use cached data
+            // Use cached data only if unit matches current preference
             val weatherData = WeatherService.WeatherData.fromCache(cachedWeather)
-            if (weatherData != null) {
+            if (weatherData != null && weatherData.useCelsius == useCelsius) {
                 displayWeather(weatherData)
                 return
             }
@@ -372,7 +374,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val weatherData = weatherService.fetchWeather(
                 prefs.locationLatitude,
-                prefs.locationLongitude
+                prefs.locationLongitude,
+                useCelsius
             )
 
             withContext(Dispatchers.Main) {
@@ -382,7 +385,7 @@ class MainActivity : AppCompatActivity() {
                     prefs.weatherCacheTime = System.currentTimeMillis()
                     displayWeather(weatherData)
                 } else {
-                    // Show cached data if available, otherwise hide
+                    // Show cached data if available (even with different unit), otherwise hide
                     val fallbackCache = prefs.weatherCache
                     if (fallbackCache != null) {
                         val fallbackData = WeatherService.WeatherData.fromCache(fallbackCache)

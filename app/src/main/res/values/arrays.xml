@@ -36,4 +36,15 @@
         <item>time_based</item>
         <item>sunrise_sunset</item>
     </string-array>
+
+    <!-- Temperature unit options -->
+    <string-array name="temperature_unit_entries">
+        <item>@string/temperature_unit_fahrenheit</item>
+        <item>@string/temperature_unit_celsius</item>
+    </string-array>
+
+    <string-array name="temperature_unit_values">
+        <item>fahrenheit</item>
+        <item>celsius</item>
+    </string-array>
 </resources>
