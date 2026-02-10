@@ -11,8 +11,8 @@ android {
         applicationId = "com.bwlaunch.launcher"
         minSdk = 28  // Boox Palma runs Android 11+, but 28 gives wider compatibility
         targetSdk = 33  // Target 33 for Boox device compatibility
-        versionCode = 1
-        versionName = "0.9"
+        versionCode = 2
+        versionName = "0.9.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

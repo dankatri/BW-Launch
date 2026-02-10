@@ -2,10 +2,13 @@ package com.bwlaunch.launcher
 
 import android.Manifest
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -377,40 +380,89 @@ class SettingsActivity : AppCompatActivity() {
                 return
             }
 
-            fusedLocationClient?.getCurrentLocation(Priority.PRIORITY_LOW_POWER, null)
-                ?.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        prefs.locationLatitude = location.latitude
-                        prefs.locationLongitude = location.longitude
-                        
-                        val sunCalc = SunCalculator(location.latitude, location.longitude)
-                        val summary = getString(
-                            R.string.pref_location_summary_set,
-                            sunCalc.formatTime(sunCalc.getSunriseMinutes()),
-                            sunCalc.formatTime(sunCalc.getSunsetMinutes())
-                        )
-                        findPreference<Preference>("location_status")?.summary = summary
-                        
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.location_updated,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.location_not_available,
-                            Toast.LENGTH_SHORT
-                        ).show()
+            // Try Play Services first with balanced accuracy, then fall back to LocationManager
+            try {
+                fusedLocationClient?.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                    ?.addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            onLocationObtained(location)
+                        } else {
+                            Log.w("SettingsActivity", "FusedLocation returned null, trying LocationManager fallback")
+                            requestLocationFallback()
+                        }
+                    }
+                    ?.addOnFailureListener { e ->
+                        Log.w("SettingsActivity", "FusedLocation failed, trying LocationManager fallback", e)
+                        requestLocationFallback()
+                    }
+            } catch (e: Exception) {
+                Log.w("SettingsActivity", "Play Services unavailable, using LocationManager fallback", e)
+                requestLocationFallback()
+            }
+        }
+
+        /**
+         * Fallback location method using Android's built-in LocationManager.
+         * Works on devices without Google Play Services (e.g. e-ink readers).
+         */
+        private fun requestLocationFallback() {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+
+            try {
+                val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+                // Try to get last known location from any provider
+                val providers = locationManager.getProviders(true)
+                var bestLocation: Location? = null
+                for (provider in providers) {
+                    val loc = locationManager.getLastKnownLocation(provider)
+                    if (loc != null && (bestLocation == null || loc.accuracy < bestLocation.accuracy)) {
+                        bestLocation = loc
                     }
                 }
-                ?.addOnFailureListener {
+
+                if (bestLocation != null) {
+                    onLocationObtained(bestLocation)
+                } else {
                     Toast.makeText(
                         requireContext(),
-                        R.string.location_error,
+                        R.string.location_not_available,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            } catch (e: Exception) {
+                Log.e("SettingsActivity", "LocationManager fallback failed", e)
+                Toast.makeText(
+                    requireContext(),
+                    R.string.location_error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        private fun onLocationObtained(location: Location) {
+            prefs.locationLatitude = location.latitude
+            prefs.locationLongitude = location.longitude
+
+            val sunCalc = SunCalculator(location.latitude, location.longitude)
+            val summary = getString(
+                R.string.pref_location_summary_set,
+                sunCalc.formatTime(sunCalc.getSunriseMinutes()),
+                sunCalc.formatTime(sunCalc.getSunsetMinutes())
+            )
+            findPreference<Preference>("location_status")?.summary = summary
+
+            Toast.makeText(
+                requireContext(),
+                R.string.location_updated,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

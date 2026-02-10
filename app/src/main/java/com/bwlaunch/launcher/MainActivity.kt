@@ -1,12 +1,17 @@
 package com.bwlaunch.launcher
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -30,6 +35,8 @@ import com.bwlaunch.launcher.model.DisplayMode
 import com.bwlaunch.launcher.model.FontType
 import com.bwlaunch.launcher.util.Debouncer
 import com.bwlaunch.launcher.util.EInkUtils
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -348,9 +355,11 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Check if we have location
+        // Check if we have location — if not, try to fetch it
         if (!prefs.hasLocation) {
-            binding.weatherText.visibility = View.GONE
+            binding.weatherText.text = "\u2026"
+            binding.weatherText.visibility = View.VISIBLE
+            fetchLocationThenWeather()
             return
         }
 
@@ -368,6 +377,12 @@ class MainActivity : AppCompatActivity() {
                 displayWeather(weatherData)
                 return
             }
+        }
+
+        // Show loading state while fetching
+        if (binding.weatherText.visibility != View.VISIBLE) {
+            binding.weatherText.text = "\u2026" // Ellipsis while loading
+            binding.weatherText.visibility = View.VISIBLE
         }
 
         // Fetch fresh weather data
@@ -394,7 +409,8 @@ class MainActivity : AppCompatActivity() {
                             return@withContext
                         }
                     }
-                    binding.weatherText.visibility = View.GONE
+                    binding.weatherText.text = getString(R.string.weather_unavailable)
+                    binding.weatherText.visibility = View.VISIBLE
                 }
             }
         }
@@ -406,6 +422,107 @@ class MainActivity : AppCompatActivity() {
     private fun displayWeather(weatherData: WeatherService.WeatherData) {
         binding.weatherText.text = weatherData.toDisplayString()
         binding.weatherText.visibility = View.VISIBLE
+    }
+
+    /**
+     * Attempts to obtain location and then fetches weather.
+     * Tries lastLocation first (instant, cached), then getCurrentLocation,
+     * then falls back to LocationManager.
+     */
+    private fun fetchLocationThenWeather() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            binding.weatherText.text = getString(R.string.weather_location_required)
+            return
+        }
+
+        try {
+            val fusedClient = LocationServices.getFusedLocationProviderClient(this)
+
+            // Step 1: Try lastLocation — instant, uses cached system location
+            fusedClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        Log.d("MainActivity", "Got lastLocation: ${location.latitude}, ${location.longitude}")
+                        saveLocationAndFetchWeather(location)
+                    } else {
+                        Log.d("MainActivity", "lastLocation null, requesting fresh location")
+                        // Step 2: Request a fresh fix
+                        requestFreshLocation(fusedClient)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("MainActivity", "lastLocation failed", e)
+                    requestFreshLocation(fusedClient)
+                }
+        } catch (e: Exception) {
+            Log.w("MainActivity", "Play Services unavailable, using LocationManager", e)
+            fetchLocationFallbackThenWeather()
+        }
+    }
+
+    private fun requestFreshLocation(fusedClient: com.google.android.gms.location.FusedLocationProviderClient) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            fetchLocationFallbackThenWeather()
+            return
+        }
+
+        fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    Log.d("MainActivity", "Got fresh location: ${location.latitude}, ${location.longitude}")
+                    saveLocationAndFetchWeather(location)
+                } else {
+                    Log.w("MainActivity", "getCurrentLocation null, trying LocationManager")
+                    fetchLocationFallbackThenWeather()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("MainActivity", "getCurrentLocation failed, trying LocationManager", e)
+                fetchLocationFallbackThenWeather()
+            }
+    }
+
+    private fun fetchLocationFallbackThenWeather() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            binding.weatherText.text = getString(R.string.weather_location_required)
+            return
+        }
+
+        try {
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val providers = locationManager.getProviders(true)
+            var bestLocation: Location? = null
+            for (provider in providers) {
+                val loc = locationManager.getLastKnownLocation(provider)
+                if (loc != null && (bestLocation == null || loc.accuracy < bestLocation.accuracy)) {
+                    bestLocation = loc
+                }
+            }
+
+            if (bestLocation != null) {
+                saveLocationAndFetchWeather(bestLocation)
+            } else {
+                binding.weatherText.text = getString(R.string.weather_location_required)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "LocationManager fallback failed", e)
+            binding.weatherText.text = getString(R.string.weather_unavailable)
+        }
+    }
+
+    private fun saveLocationAndFetchWeather(location: Location) {
+        prefs.locationLatitude = location.latitude
+        prefs.locationLongitude = location.longitude
+        // Now that we have location, re-run the full weather update
+        updateWeatherWidget()
     }
 
     private fun showAllApps() {
